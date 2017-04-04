@@ -1,0 +1,25 @@
+﻿  Flocking Algorithim.cpp
+Flocking Algorithim.cpp(13): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+Flocking Algorithim.cpp(25): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+Flocking Algorithim.cpp(50): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+  Generating code
+  8 of 220 functions ( 3.6%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  Flocking Algorithim.vcxproj -> C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\x64\Release\Flocking Algorithim.exe
+  Flocking Algorithim.vcxproj -> C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\x64\Release\Flocking Algorithim.pdb (Full PDB)
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\SFML-2.4.2\bin\openal32.dll
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\SFML-2.4.2\bin\sfml-audio-2.dll
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\SFML-2.4.2\bin\sfml-audio-d-2.dll
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\SFML-2.4.2\bin\sfml-graphics-2.dll
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\SFML-2.4.2\bin\sfml-graphics-d-2.dll
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\SFML-2.4.2\bin\sfml-network-2.dll
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\SFML-2.4.2\bin\sfml-network-d-2.dll
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\SFML-2.4.2\bin\sfml-system-2.dll
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\SFML-2.4.2\bin\sfml-system-d-2.dll
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\SFML-2.4.2\bin\sfml-window-2.dll
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\SFML-2.4.2\bin\sfml-window-d-2.dll
+         11 file(s) copied.
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\assets\boid.png
+          1 file(s) copied.

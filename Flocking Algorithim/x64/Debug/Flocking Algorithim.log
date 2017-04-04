@@ -1,0 +1,19 @@
+﻿  Flocking Algorithim.cpp
+c:\users\josh\desktop\fypdemo\flocking algorithim\flocking algorithim.cpp(14): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\josh\desktop\fypdemo\flocking algorithim\flocking algorithim.cpp(31): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Flocking Algorithim.vcxproj -> C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\x64\Debug\Flocking Algorithim.exe
+  Flocking Algorithim.vcxproj -> C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\x64\Debug\Flocking Algorithim.pdb (Full PDB)
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\SFML-2.4.2\bin\openal32.dll
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\SFML-2.4.2\bin\sfml-audio-2.dll
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\SFML-2.4.2\bin\sfml-audio-d-2.dll
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\SFML-2.4.2\bin\sfml-graphics-2.dll
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\SFML-2.4.2\bin\sfml-graphics-d-2.dll
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\SFML-2.4.2\bin\sfml-network-2.dll
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\SFML-2.4.2\bin\sfml-network-d-2.dll
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\SFML-2.4.2\bin\sfml-system-2.dll
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\SFML-2.4.2\bin\sfml-system-d-2.dll
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\SFML-2.4.2\bin\sfml-window-2.dll
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\SFML-2.4.2\bin\sfml-window-d-2.dll
+         11 file(s) copied.
+  C:\Users\Josh\Desktop\FYPDEMO\Flocking Algorithim\\Dependencies\assets\boid.png
+          1 file(s) copied.

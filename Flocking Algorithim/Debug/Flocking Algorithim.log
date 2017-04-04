@@ -1,0 +1,3 @@
+﻿  stdafx.cpp
+  Flocking Algorithim.cpp
+c:\users\josh\desktop\fypdemo\flocking algorithim\flocking algorithim.cpp(5): fatal error C1083: Cannot open include file: 'SFML\Graphics.hpp': No such file or directory
