@@ -20,47 +20,51 @@ public:
 	void ComputeCohesion(int currentBoid, int otherBoid);//computes the Cohesion portion of the flocking algorithim
 	void ComputeSeparation(int currentBoid, int otherBoid);//computes the Separation portion of the flocking algorithim
 	void ComputeObsticleAvoidance(int currentBoid, int obstacle);//computes the Separation portion of the flocking algorithim
-	void ComputeFlock(int i);
-	void addObstacle(sf::Vector2f pos, float radius);
-	bool CheckFOV(int FirstBoid,int SecondBoid);
-	void UpdateObsticlePosition(int index,sf::Vector2f pos);
-	void UpdateObsticleRadius(int index, float rad);
-	void AlignOn(bool On);
-	void CohereOn(bool On);
-	void SeparateOn(bool On);
-	void FollowOn(bool On);
-	void SetTarget(sf::Vector2f targetPos);
-
-	void DebugDraw(sf::RenderWindow & window);
+	void ComputeFlock(int i);//adds up all the factors that contribute to the flock algorithim
+	void addObstacle(sf::Vector2f pos, float radius);//adds obstacles to the vector of obstacles
+	bool CheckFOV(int FirstBoid,int SecondBoid);//checks if a boid ca "see" another boid
+	void UpdateObsticlePosition(int index,sf::Vector2f pos);//allows the user to update an obstacles position
+	void UpdateObsticleRadius(int index, float rad);//allows the user to change the avoidance radius on an obstacle
+	void AlignOn(bool On);//set weither the flocking algorithim will compute the alignment component
+	void CohereOn(bool On);//set weither the flocking algorithim will compute the cohesion component
+	void SeparateOn(bool On);//set weither the flocking algorithim will compute the separate component
+	void FollowOn(bool On);////set weither the boids follow a target.
+	void InBoudsOn(bool On);//sets weither the boids will stay witin a boundry
+	void SetTarget(sf::Vector2f targetPos);//sets the target to follow
+	void setBounds(sf::RectangleShape & boundingRect);//sets the containing boundry for the boids
+	void checkBounds(int index);//check if the boids are within the bondry and takes approiate action
+	void DebugDraw(sf::RenderWindow & window);//draw all the circles that let you visualise the flocking distance,separation disance
 private:
 
-	struct Obstacle {
+	struct Obstacle {//holds the info for an obstacle
 		sf::Vector2f position;
 		float avoidRadius;
 	};
 
-	std::vector<Boid*> m_boids;
-	float flockRange;
-	float separationRange;
-	bool cohere, align, separate,followTarget;
-	float FOV_angle = 180;
+	std::vector<Boid*> m_boids;//holds the boids
+	float flockRange;//the max distance from a boid that another boid needs to be considered for flocking 
+	float separationRange;//the max distance that a boid will stay away from another boid
+	bool cohere, align, separate,followTarget,stayInBounds;
+	float FOV_angle;//the angle in witch a boid can "see" other boids
+	sf::RectangleShape bounds;//a rectangle representing the "container" in witch boids move around
+	sf::Vector2f alignment;//the alignment component of the flocking algorithim
+	sf::Vector2f cohesion;//the cohesion component of the flocking algorithim
+	sf::Vector2f seperation;//the separation component of the flocking algorithim
+	sf::Vector2f direction;//the direction the boid is travelling in. it is added to the flocking algorithim to keep the boids moving
+	sf::Vector2f obstacleAvoidance;//added to the flocking algorithim to get the boids to avoid obstacles. similar to the separation component except using obstacles instead of other boids
+	sf::Vector2f target;//the position of the target to follow
+	sf::Vector2f targetDirection;//direction from target to boid. added to the flocking algorithim to get boids to follow a target
+	sf::Vector2f flockingVector;//the combined result of all components of the algorithim
 
-	sf::Vector2f alignment;
-	sf::Vector2f cohesion;
-	sf::Vector2f seperation;
-	sf::Vector2f direction;
-	sf::Vector2f obstacleAvoidance;
-	sf::Vector2f target;
-	sf::Vector2f targetDirection;
-	int cohereNeighbourCount;
-	int alignNeighbourCount;
-	int separateNeighbourCount;
-	int obsticleNeighbourCount;
+	int cohereNeighbourCount;//counts how many boids are within cohesion distance,used to find the average direction to move towards
+	int alignNeighbourCount;//counts how many boids are within alignment distance
+	int separateNeighbourCount;//counts how many boids are within separate  distance
+	int obsticleNeighbourCount;//counts how many obstacles are within avoidace distance
 
-	std::vector<sf::CircleShape> debugFlockDistanceCircles;	
-	std::vector<sf::CircleShape> debugSeparationDistanceCircles;
-	std::vector<sf::CircleShape> debugObstacleSeparationDistanceCircles;
-	std::vector<Obstacle> obstacleList;
+	std::vector<sf::CircleShape> debugFlockDistanceCircles;	//holds the circles that represent flocking distance
+	std::vector<sf::CircleShape> debugSeparationDistanceCircles;//holds the circles that represent the separation distace 
+	std::vector<sf::CircleShape> debugObstacleSeparationDistanceCircles;//holds the circles that represent avoidace radius of obstacles
+	std::vector<Obstacle> obstacleList;//olds all obstacles
 
 	
 };

@@ -1,4 +1,4 @@
-// Flocking Algorithim.cpp : Defines the entry point for the console application.
+// Flocking Algorithim.cpp 
 //
 
 #include "stdafx.h"
@@ -14,8 +14,9 @@
 GameObject creategameObject(sf::Texture &tex);
 int main()
 {
-	srand(time(NULL));
-	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Flocking Algorithim");//,sf::Style::Fullscreen);
+	srand(time(NULL));//for seeding the random gen
+	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Flocking Algorithim",sf::Style::Fullscreen);//,sf::Style::Fullscreen);
+	
 	window.setKeyRepeatEnabled(false);
 	window.setFramerateLimit(60);
 
@@ -35,166 +36,176 @@ int main()
 	obstacleTex.setSmooth(true);
 
 	FlockingSystem flockingsys;//initilise the flocking system
-	float flockDistance = 100;//the max distance between two boids that they will consider for  flocking
-	float separationDistance = 30;//how far from the position of a boid the other boids will seperate by
-	float fovAngle = 180;
-	int NoOfObjects = 2;//number of boids/objects
-	int maxObstacles = 10;
-	int maxFlockingDistance = 500;
-	int minFlockingDistance = 40;
-	int maxSeparationDistance = 100;
-	int minSeparationDistance = 10;
-	int minObjects = 2;
-	int maxObjects = 100;
-	int maxFOV = 360;
-	int minFOV = 20;
-	int previousNoOfObjects;
-	int differenceInObjects;
+	
 
-	obstacleTex.loadFromFile("Dependencies/assets/Obstacle.png");
-	clickedBox.loadFromFile("Dependencies/assets/clicked.png");
-	unclickedBox.loadFromFile("Dependencies/assets/unclicked.png");
-	boidtexture.loadFromFile("Dependencies/assets/boid.png");
-	scrollBar.loadFromFile("Dependencies/assets/bar.png");
-	scrollBarCursor.loadFromFile("Dependencies/assets/barcursor.png");
-	buttonTex.loadFromFile("Dependencies/assets/button.png");
+	int noOfObjects = 2;//number of boids/objects
+	int maxObjects = 100;// min number of obsticles
+	int minObjects = 2;//min number of obsticles
+	int previousNoOfObjects;//store the number of objects there was in the last frame
+	int differenceInObjects; //this used so for finding out how many onjects to add or remove
 
-	sf::Sprite flockButton;
+	int maxObstacles = 10;//max number of obsticles
+
+	float flockDistance = 0;//the  distance between two boids that they will consider for  flocking
+	int maxFlockingDistance = 500;// max distance in pixels that boids can be from each other to flock
+	int minFlockingDistance = 40;//min distance in pixels that boid can be from each other to flock
+
+	float separationDistance = 0;//how far from the position of a boid the other boids will seperate by
+	int maxSeparationDistance = 100; //max distance in pixels that boids will separate from each other
+	int minSeparationDistance = 10;//max distance in pixels that boids will separate from each other
+
+	float fovAngle = 0;//the angle that each boid can "see" ie feild of view 
+	int maxFOV = 360;//maximum feild of view 360 ie full circle 
+	int minFOV = 20;//minimun feild of view
+	
+	obstacleTex.loadFromFile("Dependencies/assets/Obstacle.png");//load Texture
+	clickedBox.loadFromFile("Dependencies/assets/clicked.png");//load Texture
+	unclickedBox.loadFromFile("Dependencies/assets/unclicked.png");//load Texture
+	boidtexture.loadFromFile("Dependencies/assets/boid.png");//load Texture
+	scrollBar.loadFromFile("Dependencies/assets/bar.png");//load Texture
+	scrollBarCursor.loadFromFile("Dependencies/assets/barcursor.png");//load Texture
+	buttonTex.loadFromFile("Dependencies/assets/button.png");//load Texture
+
+	sf::Sprite flockButton;//sprite for a button that will turn on the flocking algotithim
 	flockButton.setTexture(buttonTex);
 	flockButton.setOrigin(flockButton.getGlobalBounds().width / 2, flockButton.getGlobalBounds().height / 2);
 	flockButton.setPosition(sf::Vector2f(1700, 200));
 
-	ScrollBar flockingDistanceBar(scrollBar,scrollBarCursor,sf::Vector2f(1650,500),sf::Vector2f(1560,500),maxFlockingDistance,minFlockingDistance);
-	ScrollBar separationDistanceBar(scrollBar, scrollBarCursor, sf::Vector2f(1650, 600), sf::Vector2f(1530, 600), maxSeparationDistance, minSeparationDistance);
-	ScrollBar fovBar(scrollBar, scrollBarCursor, sf::Vector2f(1650, 700), sf::Vector2f(1650, 700), maxFOV, minFOV);
-	ScrollBar boidsBar(scrollBar, scrollBarCursor, sf::Vector2f(1650, 800), sf::Vector2f(1510, 800), maxObjects, minObjects);
+	ScrollBar flockingDistanceBar(scrollBar,scrollBarCursor,sf::Vector2f(1650,500),sf::Vector2f(1560,500),maxFlockingDistance,minFlockingDistance);//used to vary the flocking distance at runtime
+	ScrollBar separationDistanceBar(scrollBar, scrollBarCursor, sf::Vector2f(1650, 600), sf::Vector2f(1530, 600), maxSeparationDistance, minSeparationDistance);//used to vary the separation distance at runtime
+	ScrollBar fovBar(scrollBar, scrollBarCursor, sf::Vector2f(1650, 700), sf::Vector2f(1650, 700), maxFOV, minFOV);//used to vary the Feild of view at runtime
+	ScrollBar boidsBar(scrollBar, scrollBarCursor, sf::Vector2f(1650, 800), sf::Vector2f(1510, 800), maxObjects, minObjects);//used to vary the number of boids at runtime
 
-	Checkbox alignBox(clickedBox, unclickedBox, sf::Vector2f(1500, 100));
-	Checkbox CohereBox(clickedBox, unclickedBox, sf::Vector2f(1500, 200));
-	Checkbox SeparateBox(clickedBox, unclickedBox, sf::Vector2f(1500, 300));
-	Checkbox debugBox(clickedBox, unclickedBox, sf::Vector2f(1500, 400));
-	Checkbox FollowBox(clickedBox, unclickedBox, sf::Vector2f(1500, 900));
+	Checkbox alignBox(clickedBox, unclickedBox, sf::Vector2f(1500, 100));// tick box for toggling the alignment component of the flocking algorithim on and off 
+	Checkbox cohereBox(clickedBox, unclickedBox, sf::Vector2f(1500, 200));// tick box for toggling the Cohesion component of the flocking algorithim on and off 
+	Checkbox SeparateBox(clickedBox, unclickedBox, sf::Vector2f(1500, 300));// tick box for toggling the Separation component of the flocking algorithim on and off 
+	Checkbox debugBox(clickedBox, unclickedBox, sf::Vector2f(1500, 400));// tick box for toggling the Debug info on and off 
+	Checkbox followBox(clickedBox, unclickedBox, sf::Vector2f(1500, 900));//// tick box for toggling weither the flock will follow the mouse
 	
-	sf::RectangleShape border;
+	sf::RectangleShape border; // a rectangle representing the area in witch the boids will flock
 	border.setSize(sf::Vector2f(900, 900));
 	border.setOutlineColor(sf::Color::Black);
 	border.setOutlineThickness(5);
 	border.setPosition(200, 0);
 
-	sf::Font arial;
+	flockingsys.InBoudsOn(true);//lets the flocking system know that the boids will have a boundry to stay in
+	flockingsys.setBounds(border);//tells the flocking system the position and size of the boundry by passing in a reference to a rectangle. in this case its the same as the border rectangle
+
+	sf::Font arial; //loading a font for text
 	// Load it from a file
 	if (!arial.loadFromFile("Dependencies/assets/arial.ttf"))
 	{
 		std::cout << "error loding font" << std::endl;
 	}
-	sf::Text alignText;
+
+	sf::Text alignText;//sets up a text for indicating witch button is the toggle for alignment
 	alignText.setFillColor(sf::Color::Red);
 	alignText.setString("Alignment");
 	alignText.setFont(arial);
 	alignText.setOrigin(alignText.getGlobalBounds().width / 2, alignText.getGlobalBounds().height / 2);
 	alignText.setPosition(sf::Vector2f(alignBox.getPosition().x - alignText.getGlobalBounds().width + 30, alignBox.getPosition().y));
 
-	sf::Text coheseText;
+	sf::Text coheseText;//sets up a text for indicating witch button is the toggle for cohesion
 	coheseText.setFillColor(sf::Color::Blue);
 	coheseText.setString("Cohesion");
 	coheseText.setFont(arial);
 	coheseText.setOrigin(coheseText.getGlobalBounds().width / 2, coheseText.getGlobalBounds().height / 2);
-	coheseText.setPosition(sf::Vector2f(CohereBox.getPosition().x - coheseText.getGlobalBounds().width + 30, CohereBox.getPosition().y));
+	coheseText.setPosition(sf::Vector2f(cohereBox.getPosition().x - coheseText.getGlobalBounds().width + 30, cohereBox.getPosition().y));
 
-	sf::Text separateText;
+	sf::Text separateText;//sets up a text for indicating witch button is the toggle for separation
 	separateText.setString("Separation");
 	separateText.setFillColor(sf::Color(38, 106, 46, 255));
 	separateText.setFont(arial);
 	separateText.setOrigin(separateText.getGlobalBounds().width / 2, separateText.getGlobalBounds().height / 2);
 	separateText.setPosition(sf::Vector2f(SeparateBox.getPosition().x - separateText.getGlobalBounds().width + 30, SeparateBox.getPosition().y));
 
-	sf::Text debugText;
+	sf::Text debugText;//sets up a text for indicating witch button is the toggle for the debug information
 	debugText.setFillColor(sf::Color::Black);
 	debugText.setString("Debug Circles");
 	debugText.setFont(arial);
 	debugText.setOrigin(debugText.getGlobalBounds().width / 2, debugText.getGlobalBounds().height / 2);
 	debugText.setPosition(sf::Vector2f(debugBox.getPosition().x - debugText.getGlobalBounds().width + 30, debugBox.getPosition().y));
 
-	sf::Text fovText;
+	sf::Text fovText;//sets up a text displaying the feild of view in degrees to the user and pointing out witch scroll bar is the fov bar
 	fovText.setFillColor(sf::Color::Black);
 	fovText.setString("FOV Angle = " + std::to_string((int)fovAngle)+ "°");
 	fovText.setFont(arial);
 	fovText.setOrigin(fovText.getGlobalBounds().width / 2, fovText.getGlobalBounds().height / 2);
 	fovText.setPosition(sf::Vector2f(1300,700));
 
-	sf::Text boidText;
+	sf::Text boidText;//sets up a text displaying the number of boid to the user and pointing out witch scroll bar is the boid slider
 	boidText.setFillColor(sf::Color::Black);
-	boidText.setString("No of Boids = " + std::to_string((int)NoOfObjects));
+	boidText.setString("No of Boids = " + std::to_string((int)noOfObjects));
 	boidText.setFont(arial);
 	boidText.setOrigin(boidText.getGlobalBounds().width / 2, boidText.getGlobalBounds().height / 2);
 	boidText.setPosition(sf::Vector2f(1300, 800));
 
-	sf::Text FlockDistanceText;
-	FlockDistanceText.setFillColor(sf::Color::Black);
-	FlockDistanceText.setString("Alignment/Cohere Distance = " + std::to_string((int)flockDistance)+"px");
-	FlockDistanceText.setFont(arial);
-	FlockDistanceText.setOrigin(FlockDistanceText.getGlobalBounds().width / 2, FlockDistanceText.getGlobalBounds().height / 2);
-	FlockDistanceText.setPosition(sf::Vector2f(1400, 500));
+	sf::Text flockDistanceText;//sets up a text displaying the flock distance in pixels to the user and pointing out witch scroll bar is the slider for flock distance
+	flockDistanceText.setFillColor(sf::Color::Black);
+	flockDistanceText.setString("Alignment/Cohere Distance = " + std::to_string((int)flockDistance)+"px");
+	flockDistanceText.setFont(arial);
+	flockDistanceText.setOrigin(flockDistanceText.getGlobalBounds().width / 2, flockDistanceText.getGlobalBounds().height / 2);
+	flockDistanceText.setPosition(sf::Vector2f(1400, 500));
 
-	sf::Text separateDisatanceText;
+	sf::Text separateDisatanceText;//sets up a text displaying the flock distance in pixels to the user and pointing out witch scroll bar is the slider for separation distance
 	separateDisatanceText.setFillColor(sf::Color::Black);
 	separateDisatanceText.setString("Separation Distance = " + std::to_string((int)separationDistance)+"px");
 	separateDisatanceText.setFont(arial);
 	separateDisatanceText.setOrigin(separateDisatanceText.getGlobalBounds().width / 2, separateDisatanceText.getGlobalBounds().height / 2);
 	separateDisatanceText.setPosition(sf::Vector2f(1300, 600));
 
-	sf::Text flockButtonText;
+	sf::Text flockButtonText;//sets up a text displaying to the user where the button for turning on the flock is located
 	flockButtonText.setFillColor(sf::Color::Black);
 	flockButtonText.setString("FLOCK!");
 	flockButtonText.setFont(arial);
 	flockButtonText.setOrigin(flockButtonText.getGlobalBounds().width / 2, flockButtonText.getGlobalBounds().height / 2);
 	flockButtonText.setPosition(sf::Vector2f(1790, 195));
 
-	sf::Text followMouseText;
+	sf::Text followMouseText;//sets up a text displaying to the user where the button for getting the flock to follow the mouse is located;
 	followMouseText.setFillColor(sf::Color::Black);
 	followMouseText.setString("Follow Mouse");
 	followMouseText.setFont(arial);
-	followMouseText.setOrigin(flockButtonText.getGlobalBounds().width / 2, flockButtonText.getGlobalBounds().height / 2);
+	followMouseText.setOrigin(followMouseText.getGlobalBounds().width / 2, followMouseText.getGlobalBounds().height / 2);
 	followMouseText.setPosition(sf::Vector2f(1300, 900));
 
 
-	sf::Vertex AlignmentLine[] =
+	sf::Vertex AlignmentLine[] =//lies to be draw for asthetic reasons. a lie from the alignent box to the flock button
 	{
-		sf::Vertex(sf::Vector2f(alignBox.getPosition().x + 15, alignBox.getPosition().y),sf::Color::Red),
-		sf::Vertex(sf::Vector2f(flockButton.getPosition().x -15, flockButton.getPosition().y),sf::Color::Black)
+		sf::Vertex(sf::Vector2f(alignBox.getPosition().x + unclickedBox.getSize().x / 2, alignBox.getPosition().y),sf::Color::Red),
+		sf::Vertex(sf::Vector2f(flockButton.getPosition().x - unclickedBox.getSize().x / 2, flockButton.getPosition().y),sf::Color::Black),
+
 	};
-	sf::Vertex CohesionLine[] =
+	sf::Vertex CohesionLine[] =//same as above but for cohesion box
 	{
-		sf::Vertex(sf::Vector2f(CohereBox.getPosition().x + 15, CohereBox.getPosition().y),sf::Color::Blue),
-		sf::Vertex(sf::Vector2f(flockButton.getPosition().x - 15, flockButton.getPosition().y),sf::Color::Black)
+		sf::Vertex(sf::Vector2f(cohereBox.getPosition().x + unclickedBox.getSize().x/2, cohereBox.getPosition().y),sf::Color::Blue),
+		sf::Vertex(sf::Vector2f(flockButton.getPosition().x - unclickedBox.getSize().x / 2, flockButton.getPosition().y),sf::Color::Black)
 	};
-	sf::Vertex SeparationLine[] =
+	sf::Vertex SeparationLine[] =//same as above but for Separation box
 	{
-		sf::Vertex(sf::Vector2f(SeparateBox.getPosition().x + 15, SeparateBox.getPosition().y),sf::Color(38,106,46,255)),
-		sf::Vertex(sf::Vector2f(flockButton.getPosition().x - 15, flockButton.getPosition().y),sf::Color::Black)
+		sf::Vertex(sf::Vector2f(SeparateBox.getPosition().x + unclickedBox.getSize().x / 2, SeparateBox.getPosition().y),sf::Color(38,106,46,255)),
+		sf::Vertex(sf::Vector2f(flockButton.getPosition().x - unclickedBox.getSize().x / 2, flockButton.getPosition().y),sf::Color::Black)
 	};
 
 
 
 	std::vector<GameObject> gameObjects;//holds the objects to be flocked. we will pass the positions and velocity form these objects to the flocking system and get back the flocked result
-	std::vector<Obstacle> obsticales;
+	std::vector<Obstacle> obsticales;//list of obstacles 
 
-	for (int i = 0; i < NoOfObjects; i++)//initilise the vector of game objects and add them to the flocking system
+	for (int i = 0; i < noOfObjects; i++)//initilise the vector of game objects and add them to the flocking system
 	{
-		GameObject temp = creategameObject(boidtexture);
-		gameObjects.push_back(temp);
-		flockingsys.Add_Boid(temp.getPosition(),temp.getVelocity());
+		GameObject temp = creategameObject(boidtexture);//create a boid
+		gameObjects.push_back(temp);//send it into the gam objects vector
+		flockingsys.Add_Boid(temp.getPosition(),temp.getVelocity());//add it to the flocking sys.
 	}
 
-
-	for (int i =0; i <maxObstacles;i++)
+	for (int i =0; i <maxObstacles;i++)//create obstacles and add them to the flockig system.
 	{
-		Obstacle ob(sf::Vector2f(rand() % 900 + 200, rand() % 900 + 1), 30, obstacleTex);
+		Obstacle ob(sf::Vector2f((rand() % 900 + 200), rand() % 900), 30, obstacleTex);
 		flockingsys.addObstacle(ob.getPosition(), ob.getRadius());
 		obsticales.push_back(ob);
+
 	}
-
-
+	
 
 
 	while (window.isOpen())
@@ -207,12 +218,6 @@ int main()
 
 			if (event.type == sf::Event::KeyPressed)
 			{
-				if (event.key.code == sf::Keyboard::K)
-				{
-					gameObjects.erase(gameObjects.begin() + 0);
-					flockingsys.Delete_Boid(0);
-				}
-			
 				if (event.key.code == sf::Keyboard::Escape)
 				{
 					window.close();
@@ -224,18 +229,18 @@ int main()
 		
 		}
 
-		flockDistance = flockingDistanceBar.Update(window);
-		separationDistance = separationDistanceBar.Update(window);
-		fovAngle = fovBar.Update(window);
+		flockDistance = flockingDistanceBar.Update(window);//update the flocking distance to what the scroll bar is on
+		separationDistance = separationDistanceBar.Update(window);//update the separation distance to what the scroll bar is on
+		fovAngle = fovBar.Update(window);//update the fov angle to what the scroll bar is on
 
 
-		previousNoOfObjects = NoOfObjects;
-		NoOfObjects = boidsBar.Update(window);
-		differenceInObjects = NoOfObjects - previousNoOfObjects;
+		previousNoOfObjects = noOfObjects;//store the number of boids in the last frame
+		noOfObjects = boidsBar.Update(window);//update the number of boids  to what the scroll bar is on
+		differenceInObjects = noOfObjects - previousNoOfObjects;// how many objects are to be added or removed
 
-		if (differenceInObjects != 0)
+		if (differenceInObjects != 0)//if there is a change in the number objects. either add more of remove some
 		{
-			if (differenceInObjects > 0)
+			if (differenceInObjects > 0)// if we need to add more boids
 			{
 				for (int i = 0; i < differenceInObjects; i++)
 				{
@@ -244,7 +249,7 @@ int main()
 					flockingsys.Add_Boid(temp.getPosition(), temp.getVelocity());
 				}
 			}
-			if (differenceInObjects < 0)
+			if (differenceInObjects < 0)// if we need to remove some boids
 			{
 				differenceInObjects = -differenceInObjects;
 				for (int i = 0; i < differenceInObjects; i++)
@@ -258,30 +263,33 @@ int main()
 		}
 		
 
-		FlockDistanceText.setString("Flock Distance = " + std::to_string((int)flockDistance)+"px");
-		fovText.setString("FOV Angle = " + std::to_string((int)fovAngle)+"°");
-		separateDisatanceText.setString("Separation Distance = " + std::to_string((int)separationDistance)+"px");
-		boidText.setString("No of Boids = " + std::to_string((int)NoOfObjects));
+		flockDistanceText.setString("Flock Distance = " + std::to_string((int)flockDistance)+"px");//update all the strings
+		fovText.setString("FOV Angle = " + std::to_string((int)fovAngle)+"°");//update all the strings
+		separateDisatanceText.setString("Separation Distance = " + std::to_string((int)separationDistance)+"px");//update all the strings
+		boidText.setString("No of Boids = " + std::to_string((int)noOfObjects));//update all the strings
+
+
 		if (gameObjects.size() > 0)
 		{
-			flockingsys.Update( flockDistance, separationDistance,fovAngle);
+			flockingsys.Update( flockDistance, separationDistance,fovAngle);//update the flocking system
 		
 			for (int i = 0; i < gameObjects.size(); i++)
 			{
-				gameObjects[i].Update(flockingsys.get_PositionResult(i), flockingsys.get_VelocityResult(i));
+				gameObjects[i].Update(flockingsys.get_PositionResult(i), flockingsys.get_VelocityResult(i));//update the game objects
 			}
 		}
 	
 		if (sf::Mouse::getPosition(window).x > flockButton.getPosition().x - flockButton.getGlobalBounds().width / 2
 			&& sf::Mouse::getPosition(window).x < flockButton.getPosition().x + flockButton.getGlobalBounds().width / 2
 			&& sf::Mouse::getPosition(window).y > flockButton.getPosition().y - flockButton.getGlobalBounds().height / 2
-			&& sf::Mouse::getPosition(window).y < flockButton.getPosition().y + flockButton.getGlobalBounds().height / 2)
+			&& sf::Mouse::getPosition(window).y < flockButton.getPosition().y + flockButton.getGlobalBounds().height / 2)//check if the mouse is within the bouds of the flock button
 		{
-			flockButton.setScale(sf::Vector2f(1.2, 1.2));
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			flockButton.setScale(sf::Vector2f(1.2, 1.2));//when the mouse is over the button, make it bigger to indicate it is clickable
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))//if the button is pressed
 			{
+				//turn on all flocking componets
 				alignBox.setOn(true);
-				CohereBox.setOn(true);
+				cohereBox.setOn(true);
 				SeparateBox.setOn(true);
 
 			}
@@ -289,15 +297,16 @@ int main()
 	
 
 
-		if (alignBox.Update(window) == true)
+		if (alignBox.Update(window) == true)//if the button is pressed
 		{
-			flockingsys.AlignOn(true);
+			flockingsys.AlignOn(true);//turn on the component
 		}
 		else
 		{
-			flockingsys.AlignOn(false);
+			flockingsys.AlignOn(false);//if not on,turn off component
 		}
-		if (CohereBox.Update(window) == true)
+
+		if (cohereBox.Update(window) == true)//same as above
 		{
 			flockingsys.CohereOn(true);
 		}
@@ -305,7 +314,8 @@ int main()
 		{
 			flockingsys.CohereOn(false);
 		}
-		if (SeparateBox.Update(window) == true)
+
+		if (SeparateBox.Update(window) == true)//same as above
 		{
 			flockingsys.SeparateOn(true);
 		}
@@ -314,19 +324,20 @@ int main()
 			flockingsys.SeparateOn(false);
 		}
 
-		if (FollowBox.Update(window) == true)
+
+		if (followBox.Update(window) == true)//the follow mouse button is on
 		{
-			if (sf::Mouse::getPosition().x > border.getPosition().x
-				&& sf::Mouse::getPosition().x <  border.getPosition().x + border.getGlobalBounds().width
-				&& sf::Mouse::getPosition().y > border.getPosition().y 
-				&& sf::Mouse::getPosition().y <  border.getPosition().y + border.getGlobalBounds().height)
+			if (sf::Mouse::getPosition(window).x > border.getPosition().x
+				&& sf::Mouse::getPosition(window).x <  border.getPosition().x + border.getGlobalBounds().width
+				&& sf::Mouse::getPosition(window).y > border.getPosition().y
+				&& sf::Mouse::getPosition(window).y <  border.getPosition().y + border.getGlobalBounds().height)//check if mouse is in the flocking "arena"/within the border
 			{
-				flockingsys.FollowOn(true);
-				flockingsys.SetTarget(sf::Vector2f(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y));
+				flockingsys.FollowOn(true);//tell the flocking system it needs to follow a target
+				flockingsys.SetTarget(sf::Vector2f(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y));//set the target to the mouse position
 			}
 			else
 			{
-				flockingsys.FollowOn(false);
+				flockingsys.FollowOn(false);//dont follow if mouse isnt in the bounds
 			}
 		}
 		else
@@ -361,17 +372,17 @@ int main()
 		}
 
 		alignBox.Draw(window);
-		CohereBox.Draw(window);
+		cohereBox.Draw(window);
 		SeparateBox.Draw(window);
 		debugBox.Draw(window);
-		FollowBox.Draw(window);
+		followBox.Draw(window);
 		window.draw(flockButton);
 		window.draw(alignText);
 		window.draw(coheseText);
 		window.draw(separateText);
 		window.draw(flockButtonText);
 		window.draw(debugText);
-		window.draw(FlockDistanceText);
+		window.draw(flockDistanceText);
 		window.draw(separateDisatanceText);
 		window.draw(followMouseText);
 		window.draw(fovText);

@@ -8,7 +8,7 @@
 class Checkbox {
 
 public:
-	Checkbox(sf::Texture & clickedTex, sf::Texture & unclickedTex,sf::Vector2f position);
+	Checkbox(sf::Texture & clickedTex, sf::Texture & unclickedTex,sf::Vector2f position);//texture for unclicked box,clicked box and position
 
 	bool Update(sf::RenderWindow & window);
 	void Draw(sf::RenderWindow & window);

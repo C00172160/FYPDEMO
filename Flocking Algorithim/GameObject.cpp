@@ -8,7 +8,6 @@ GameObject::GameObject(sf::Vector2f position, sf::Vector2f velocity, sf::Texture
 	m_position = position;
 	m_velocity = velocity;
 	angle = 0;
-	//m_sprite.setScale(sf::Vector2f(0.3, 0.3));
 	m_sprite.setOrigin(m_sprite.getGlobalBounds().width / 2, m_sprite.getGlobalBounds().height / 2);
 }
 
@@ -26,7 +25,7 @@ void GameObject::Update(sf::Vector2f newPosition,sf::Vector2f newVelocity)
 	m_sprite.setPosition(m_position);
 
 	angle = atan2(m_velocity.y, m_velocity.x);
-	angle = angle * (180 / 3.14);
+	angle = angle * (180 / 3.14);//Rotate sprite toward its direction
 
 	m_sprite.setRotation(angle);
 

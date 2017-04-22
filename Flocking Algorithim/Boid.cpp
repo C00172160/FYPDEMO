@@ -25,7 +25,7 @@ sf::Vector2f Boid::getPosition()
 
 void Boid::Update()
 {
-	m_position += m_velocity;
+	m_position += m_velocity;//mpve the boid 
 }
 
 void Boid::setPosition(sf::Vector2f newPos)

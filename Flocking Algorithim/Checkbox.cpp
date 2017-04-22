@@ -24,10 +24,10 @@ bool Checkbox::Update(sf::RenderWindow & window )
 	if (sf::Mouse::getPosition(window).x > m_sprite.getPosition().x - m_sprite.getGlobalBounds().width/2
 	&&  sf::Mouse::getPosition(window).x < m_sprite.getPosition().x + m_sprite.getGlobalBounds().width/2
 	&&  sf::Mouse::getPosition(window).y > m_sprite.getPosition().y - m_sprite.getGlobalBounds().height / 2
-	&&  sf::Mouse::getPosition(window).y < m_sprite.getPosition().y + m_sprite.getGlobalBounds().height/2)
+	&&  sf::Mouse::getPosition(window).y < m_sprite.getPosition().y + m_sprite.getGlobalBounds().height/2)//check if the mouse is over the box
 	{
-		m_sprite.setScale(sf::Vector2f(1.2, 1.2));
-		if (mouseClicked == false && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		m_sprite.setScale(sf::Vector2f(1.2, 1.2));//increase the size of the box to show it is selected
+		if (mouseClicked == false && sf::Mouse::isButtonPressed(sf::Mouse::Left))//when the box is clicked turn it on
 		{
 			OptionOn = !OptionOn;
 
@@ -40,7 +40,7 @@ bool Checkbox::Update(sf::RenderWindow & window )
 
 	if (OptionOn == true)
 	{
-		m_sprite.setTexture(clicked);
+		m_sprite.setTexture(clicked);//change the texture to the on texture
 	}
 	else
 	{

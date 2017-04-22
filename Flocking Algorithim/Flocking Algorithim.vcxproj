@@ -110,8 +110,11 @@
       <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(ProjectDir)\Dependencies\SFML-2.4.2\bin\*.dll" "$(TargetDir)"
-copy "$(ProjectDir)\Dependencies\assets\*.png" "$(TargetDir)"</Command>
+      <Command>if not exist "$(TargetDir)Dependencies" mkdir "$(TargetDir)Dependencies"
+if not exist "$(TargetDir)Dependencies\assets" mkdir "$(TargetDir)Dependencies\assets"
+copy "$(ProjectDir)\Dependencies\SFML-2.4.2\bin\*.dll" "$(TargetDir)"
+copy "$(ProjectDir)\Dependencies\assets\*.png" "$(TargetDir)Dependencies\assets"
+copy "$(ProjectDir)\Dependencies\assets\*.ttf" "$(TargetDir)Dependencies\assets"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -151,8 +154,11 @@ copy "$(ProjectDir)\Dependencies\assets\*.png" "$(TargetDir)"</Command>
       <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(ProjectDir)\Dependencies\SFML-2.4.2\bin\*.dll" "$(TargetDir)"
-copy "$(ProjectDir)\Dependencies\assets\*.png" "$(TargetDir)"</Command>
+      <Command>if not exist "$(TargetDir)Dependencies" mkdir "$(TargetDir)Dependencies"
+if not exist "$(TargetDir)Dependencies\assets" mkdir "$(TargetDir)Dependencies\assets"
+copy "$(ProjectDir)\Dependencies\SFML-2.4.2\bin\*.dll" "$(TargetDir)"
+copy "$(ProjectDir)\Dependencies\assets\*.png" "$(TargetDir)Dependencies\assets"
+copy "$(ProjectDir)\Dependencies\assets\*.ttf" "$(TargetDir)Dependencies\assets"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -182,6 +188,9 @@ copy "$(ProjectDir)\Dependencies\assets\*.png" "$(TargetDir)"</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="res.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
