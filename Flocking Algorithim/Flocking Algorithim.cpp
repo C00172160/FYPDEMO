@@ -11,6 +11,7 @@
 #include <time.h>
 #include "Obstacle.h"
 
+GameObject creategameObject(sf::Texture &tex);
 int main()
 {
 	srand(time(NULL));
@@ -37,16 +38,18 @@ int main()
 	float flockDistance = 100;//the max distance between two boids that they will consider for  flocking
 	float separationDistance = 30;//how far from the position of a boid the other boids will seperate by
 	float fovAngle = 180;
-	int maxObjects = 50;//number of boids/objects
+	int NoOfObjects = 2;//number of boids/objects
 	int maxObstacles = 10;
 	int maxFlockingDistance = 500;
 	int minFlockingDistance = 40;
 	int maxSeparationDistance = 100;
 	int minSeparationDistance = 10;
-	
+	int minObjects = 2;
+	int maxObjects = 100;
 	int maxFOV = 360;
 	int minFOV = 20;
-
+	int previousNoOfObjects;
+	int differenceInObjects;
 
 	obstacleTex.loadFromFile("Dependencies/assets/Obstacle.png");
 	clickedBox.loadFromFile("Dependencies/assets/clicked.png");
@@ -64,11 +67,13 @@ int main()
 	ScrollBar flockingDistanceBar(scrollBar,scrollBarCursor,sf::Vector2f(1650,500),sf::Vector2f(1560,500),maxFlockingDistance,minFlockingDistance);
 	ScrollBar separationDistanceBar(scrollBar, scrollBarCursor, sf::Vector2f(1650, 600), sf::Vector2f(1530, 600), maxSeparationDistance, minSeparationDistance);
 	ScrollBar fovBar(scrollBar, scrollBarCursor, sf::Vector2f(1650, 700), sf::Vector2f(1650, 700), maxFOV, minFOV);
+	ScrollBar boidsBar(scrollBar, scrollBarCursor, sf::Vector2f(1650, 800), sf::Vector2f(1510, 800), maxObjects, minObjects);
 
 	Checkbox alignBox(clickedBox, unclickedBox, sf::Vector2f(1500, 100));
 	Checkbox CohereBox(clickedBox, unclickedBox, sf::Vector2f(1500, 200));
 	Checkbox SeparateBox(clickedBox, unclickedBox, sf::Vector2f(1500, 300));
 	Checkbox debugBox(clickedBox, unclickedBox, sf::Vector2f(1500, 400));
+	Checkbox FollowBox(clickedBox, unclickedBox, sf::Vector2f(1500, 900));
 	
 	sf::RectangleShape border;
 	border.setSize(sf::Vector2f(900, 900));
@@ -117,6 +122,13 @@ int main()
 	fovText.setOrigin(fovText.getGlobalBounds().width / 2, fovText.getGlobalBounds().height / 2);
 	fovText.setPosition(sf::Vector2f(1300,700));
 
+	sf::Text boidText;
+	boidText.setFillColor(sf::Color::Black);
+	boidText.setString("No of Boids = " + std::to_string((int)NoOfObjects));
+	boidText.setFont(arial);
+	boidText.setOrigin(boidText.getGlobalBounds().width / 2, boidText.getGlobalBounds().height / 2);
+	boidText.setPosition(sf::Vector2f(1300, 800));
+
 	sf::Text FlockDistanceText;
 	FlockDistanceText.setFillColor(sf::Color::Black);
 	FlockDistanceText.setString("Alignment/Cohere Distance = " + std::to_string((int)flockDistance)+"px");
@@ -138,7 +150,12 @@ int main()
 	flockButtonText.setOrigin(flockButtonText.getGlobalBounds().width / 2, flockButtonText.getGlobalBounds().height / 2);
 	flockButtonText.setPosition(sf::Vector2f(1790, 195));
 
-
+	sf::Text followMouseText;
+	followMouseText.setFillColor(sf::Color::Black);
+	followMouseText.setString("Follow Mouse");
+	followMouseText.setFont(arial);
+	followMouseText.setOrigin(flockButtonText.getGlobalBounds().width / 2, flockButtonText.getGlobalBounds().height / 2);
+	followMouseText.setPosition(sf::Vector2f(1300, 900));
 
 
 	sf::Vertex AlignmentLine[] =
@@ -162,18 +179,11 @@ int main()
 	std::vector<GameObject> gameObjects;//holds the objects to be flocked. we will pass the positions and velocity form these objects to the flocking system and get back the flocked result
 	std::vector<Obstacle> obsticales;
 
-	for (int i = 0; i < maxObjects; i++)//initilise the vector of game objects and add them to the flocking system
+	for (int i = 0; i < NoOfObjects; i++)//initilise the vector of game objects and add them to the flocking system
 	{
-		int a = rand() % 100 + 1;
-	
-		GameObject temp(sf::Vector2f(rand() % 900 + 200, rand() % 900 + 1), sf::Vector2f(rand() % 2 + 1, rand() % 2 + 1), boidtexture);
-		if (a % 2 == 0)
-		{
-			temp.setVelocity(sf::Vector2f(-temp.getVelocity().x, temp.getVelocity().y));
-		}
-
+		GameObject temp = creategameObject(boidtexture);
 		gameObjects.push_back(temp);
-		flockingsys.Add_Boid(gameObjects[i].getPosition(), gameObjects[i].getVelocity());
+		flockingsys.Add_Boid(temp.getPosition(),temp.getVelocity());
 	}
 
 
@@ -199,8 +209,8 @@ int main()
 			{
 				if (event.key.code == sf::Keyboard::K)
 				{
-					gameObjects.erase(gameObjects.begin() + 4);
-					flockingsys.Delete_Boid(4);
+					gameObjects.erase(gameObjects.begin() + 0);
+					flockingsys.Delete_Boid(0);
 				}
 			
 				if (event.key.code == sf::Keyboard::Escape)
@@ -218,10 +228,40 @@ int main()
 		separationDistance = separationDistanceBar.Update(window);
 		fovAngle = fovBar.Update(window);
 
+
+		previousNoOfObjects = NoOfObjects;
+		NoOfObjects = boidsBar.Update(window);
+		differenceInObjects = NoOfObjects - previousNoOfObjects;
+
+		if (differenceInObjects != 0)
+		{
+			if (differenceInObjects > 0)
+			{
+				for (int i = 0; i < differenceInObjects; i++)
+				{
+					GameObject temp = creategameObject(boidtexture);
+					gameObjects.push_back(temp);
+					flockingsys.Add_Boid(temp.getPosition(), temp.getVelocity());
+				}
+			}
+			if (differenceInObjects < 0)
+			{
+				differenceInObjects = -differenceInObjects;
+				for (int i = 0; i < differenceInObjects; i++)
+				{
+					gameObjects.erase(gameObjects.begin() + 0);
+					flockingsys.Delete_Boid(0);
+				
+				}
+			}
+
+		}
+		
+
 		FlockDistanceText.setString("Flock Distance = " + std::to_string((int)flockDistance)+"px");
 		fovText.setString("FOV Angle = " + std::to_string((int)fovAngle)+"°");
 		separateDisatanceText.setString("Separation Distance = " + std::to_string((int)separationDistance)+"px");
-
+		boidText.setString("No of Boids = " + std::to_string((int)NoOfObjects));
 		if (gameObjects.size() > 0)
 		{
 			flockingsys.Update( flockDistance, separationDistance,fovAngle);
@@ -273,6 +313,26 @@ int main()
 		{
 			flockingsys.SeparateOn(false);
 		}
+
+		if (FollowBox.Update(window) == true)
+		{
+			if (sf::Mouse::getPosition().x > border.getPosition().x
+				&& sf::Mouse::getPosition().x <  border.getPosition().x + border.getGlobalBounds().width
+				&& sf::Mouse::getPosition().y > border.getPosition().y 
+				&& sf::Mouse::getPosition().y <  border.getPosition().y + border.getGlobalBounds().height)
+			{
+				flockingsys.FollowOn(true);
+				flockingsys.SetTarget(sf::Vector2f(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y));
+			}
+			else
+			{
+				flockingsys.FollowOn(false);
+			}
+		}
+		else
+		{
+			flockingsys.FollowOn(false);
+		}
 	
 
 		
@@ -299,10 +359,12 @@ int main()
 		{
 			obsticales[i].Draw(window);
 		}
+
 		alignBox.Draw(window);
 		CohereBox.Draw(window);
 		SeparateBox.Draw(window);
 		debugBox.Draw(window);
+		FollowBox.Draw(window);
 		window.draw(flockButton);
 		window.draw(alignText);
 		window.draw(coheseText);
@@ -311,10 +373,13 @@ int main()
 		window.draw(debugText);
 		window.draw(FlockDistanceText);
 		window.draw(separateDisatanceText);
+		window.draw(followMouseText);
 		window.draw(fovText);
+		window.draw(boidText);
 		flockingDistanceBar.Draw(window);
 		separationDistanceBar.Draw(window);
 		fovBar.Draw(window);
+		boidsBar.Draw(window);
 		window.draw(AlignmentLine, 2, sf::Lines);
 		window.draw(SeparationLine, 2, sf::Lines);
 		window.draw(CohesionLine, 2, sf::Lines);
@@ -324,4 +389,17 @@ int main()
 	}
 
 	return 0;
+}
+
+GameObject creategameObject(sf::Texture &tex)
+{
+	int a = rand() % 100 + 1;
+
+	GameObject temp(sf::Vector2f(rand() % 900 + 200, rand() % 900 + 1), sf::Vector2f(rand() % 2 + 1, rand() % 2 + 1), tex);
+	if (a % 2 == 0)
+	{
+		temp.setVelocity(sf::Vector2f(-temp.getVelocity().x, temp.getVelocity().y));
+	}
+
+	return temp;
 }

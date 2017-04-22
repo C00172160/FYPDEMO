@@ -1,11 +1,14 @@
 ﻿  Flocking Algorithim.cpp
-c:\users\joshs pc\desktop\fypdemo\flocking algorithim\flocking algorithim.cpp(16): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\users\joshs pc\desktop\fypdemo\flocking algorithim\flocking algorithim.cpp(64): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\joshs pc\desktop\fypdemo\flocking algorithim\flocking algorithim.cpp(65): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\joshs pc\desktop\fypdemo\flocking algorithim\flocking algorithim.cpp(66): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\joshs pc\desktop\fypdemo\flocking algorithim\flocking algorithim.cpp(169): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\joshs pc\desktop\fypdemo\flocking algorithim\flocking algorithim.cpp(182): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\joshs pc\desktop\fypdemo\flocking algorithim\flocking algorithim.cpp(240): warning C4305: 'argument': truncation from 'double' to 'float'
+c:\users\joshs pc\desktop\fypdemo\flocking algorithim\flocking algorithim.cpp(17): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\joshs pc\desktop\fypdemo\flocking algorithim\flocking algorithim.cpp(67): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\joshs pc\desktop\fypdemo\flocking algorithim\flocking algorithim.cpp(68): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\joshs pc\desktop\fypdemo\flocking algorithim\flocking algorithim.cpp(69): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\joshs pc\desktop\fypdemo\flocking algorithim\flocking algorithim.cpp(70): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\joshs pc\desktop\fypdemo\flocking algorithim\flocking algorithim.cpp(192): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\joshs pc\desktop\fypdemo\flocking algorithim\flocking algorithim.cpp(233): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\joshs pc\desktop\fypdemo\flocking algorithim\flocking algorithim.cpp(280): warning C4305: 'argument': truncation from 'double' to 'float'
+c:\users\joshs pc\desktop\fypdemo\flocking algorithim\flocking algorithim.cpp(325): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\joshs pc\desktop\fypdemo\flocking algorithim\flocking algorithim.cpp(398): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Generating Code...
   Skipping... (no relevant changes detected)
   GameObject.cpp

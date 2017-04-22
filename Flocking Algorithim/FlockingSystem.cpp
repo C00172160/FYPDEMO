@@ -8,6 +8,7 @@ FlockingSystem::FlockingSystem()
 	cohere = true;
 	separate = true;
 	align = true;
+	followTarget = false;
 }
 
 void FlockingSystem::Add_Boid(sf::Vector2f pos,sf::Vector2f velocity)
@@ -56,6 +57,7 @@ void FlockingSystem::Update(float flock_Distance , float Separation_Distance,flo
 		cohesion = sf::Vector2f(0, 0);
 		seperation = sf::Vector2f(0, 0);
 		obstacleAvoidance = sf::Vector2f(0, 0);
+		targetDirection = sf::Vector2f(0, 0);
 
 		m_boids[i]->Update();//moves the boids
 	     
@@ -259,11 +261,21 @@ void FlockingSystem::ComputeFlock(int i)
 		obstacleAvoidance = NormaliseVector(obstacleAvoidance);
 	}
 
+	if (followTarget == true)
+	{
+		targetDirection = target - m_boids[i]->getPosition();
+		targetDirection = NormaliseVector(targetDirection);
+		
+	}
+	else
+	{
+		targetDirection = sf::Vector2f(0, 0);
+	}
+
 	direction = NormaliseVector(m_boids[i]->getVelocity());
 
-
-	float DirX = alignment.x + cohesion.x + direction.x + seperation.x + obstacleAvoidance.x;
-	float DirY = alignment.y + cohesion.y + direction.y + seperation.y + obstacleAvoidance.y;
+	float DirX = alignment.x + cohesion.x + direction.x + seperation.x + targetDirection.x+obstacleAvoidance.x;
+	float DirY = alignment.y + cohesion.y + direction.y + seperation.y + targetDirection.y +obstacleAvoidance.y;
 
 
 	m_boids[i]->setVelocity(sf::Vector2f(DirX * 2, DirY * 2));
@@ -337,6 +349,16 @@ void FlockingSystem::CohereOn(bool On)
 void FlockingSystem::SeparateOn(bool On)
 {
 	separate = On;
+}
+
+void FlockingSystem::FollowOn(bool On)
+{
+	followTarget = On;
+}
+
+void FlockingSystem::SetTarget(sf::Vector2f targetPos)
+{
+	target = targetPos;
 }
 
 void FlockingSystem::DebugDraw(sf::RenderWindow & window)

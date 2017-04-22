@@ -28,6 +28,8 @@ public:
 	void AlignOn(bool On);
 	void CohereOn(bool On);
 	void SeparateOn(bool On);
+	void FollowOn(bool On);
+	void SetTarget(sf::Vector2f targetPos);
 
 	void DebugDraw(sf::RenderWindow & window);
 private:
@@ -40,7 +42,7 @@ private:
 	std::vector<Boid*> m_boids;
 	float flockRange;
 	float separationRange;
-	bool cohere, align, separate;
+	bool cohere, align, separate,followTarget;
 	float FOV_angle = 180;
 
 	sf::Vector2f alignment;
@@ -48,6 +50,8 @@ private:
 	sf::Vector2f seperation;
 	sf::Vector2f direction;
 	sf::Vector2f obstacleAvoidance;
+	sf::Vector2f target;
+	sf::Vector2f targetDirection;
 	int cohereNeighbourCount;
 	int alignNeighbourCount;
 	int separateNeighbourCount;
