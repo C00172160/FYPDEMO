@@ -1,0 +1,3 @@
+1. in Project Propertietes Menu Select C++ -> General -> Additional Include Directories. include the path to the include folder of this libuary
+2. in Project Propertietes Menu Select Linker -> General -> Additional Libuary Dependacies include the path to the Lib folder of this libuary
+3. in Project Propertietes Menu Select Linker -> Input-> Additional Dependacies put "Flocking Libuary SFML.lib"

@@ -11,7 +11,7 @@
 #include <time.h>
 #include "Obstacle.h"
 
-GameObject creategameObject(sf::Texture &tex);
+GameObject creategameObject(sf::Texture &tex,sf::RectangleShape & border);
 int main()
 {
 	srand(time(NULL));//for seeding the random gen
@@ -86,7 +86,7 @@ int main()
 	border.setSize(sf::Vector2f(900, 900));
 	border.setOutlineColor(sf::Color::Black);
 	border.setOutlineThickness(5);
-	border.setPosition(200, 0);
+	border.setPosition(200, 100);
 
 	flockingsys.InBoudsOn(true);//lets the flocking system know that the boids will have a boundry to stay in
 	flockingsys.setBounds(border);//tells the flocking system the position and size of the boundry by passing in a reference to a rectangle. in this case its the same as the border rectangle
@@ -193,19 +193,23 @@ int main()
 
 	for (int i = 0; i < noOfObjects; i++)//initilise the vector of game objects and add them to the flocking system
 	{
-		GameObject temp = creategameObject(boidtexture);//create a boid
+		GameObject temp = creategameObject(boidtexture,border);//create a boid
 		gameObjects.push_back(temp);//send it into the gam objects vector
 		flockingsys.Add_Boid(temp.getPosition(),temp.getVelocity());//add it to the flocking sys.
 	}
 
 	for (int i =0; i <maxObstacles;i++)//create obstacles and add them to the flockig system.
 	{
-		Obstacle ob(sf::Vector2f((rand() % 900 + 200), rand() % 900), 30, obstacleTex);
+		int maxX = border.getPosition().x + border.getGlobalBounds().width;
+		int minX = border.getPosition().x;
+		int maxY = border.getPosition().y + border.getGlobalBounds().height;
+		int minY = border.getPosition().y;
+		Obstacle ob(sf::Vector2f((rand() % (maxX - minX)+minX), (rand() % (maxY - minY) + minY)), 30, obstacleTex,true);
 		flockingsys.addObstacle(ob.getPosition(), ob.getRadius());
 		obsticales.push_back(ob);
 
 	}
-	
+
 
 
 	while (window.isOpen())
@@ -244,7 +248,7 @@ int main()
 			{
 				for (int i = 0; i < differenceInObjects; i++)
 				{
-					GameObject temp = creategameObject(boidtexture);
+					GameObject temp = creategameObject(boidtexture,border);
 					gameObjects.push_back(temp);
 					flockingsys.Add_Boid(temp.getPosition(), temp.getVelocity());
 				}
@@ -332,6 +336,7 @@ int main()
 				&& sf::Mouse::getPosition(window).y > border.getPosition().y
 				&& sf::Mouse::getPosition(window).y <  border.getPosition().y + border.getGlobalBounds().height)//check if mouse is in the flocking "arena"/within the border
 			{
+				
 				flockingsys.FollowOn(true);//tell the flocking system it needs to follow a target
 				flockingsys.SetTarget(sf::Vector2f(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y));//set the target to the mouse position
 			}
@@ -402,11 +407,16 @@ int main()
 	return 0;
 }
 
-GameObject creategameObject(sf::Texture &tex)
+GameObject creategameObject(sf::Texture &tex , sf::RectangleShape & border)
 {
 	int a = rand() % 100 + 1;
 
-	GameObject temp(sf::Vector2f(rand() % 900 + 200, rand() % 900 + 1), sf::Vector2f(rand() % 2 + 1, rand() % 2 + 1), tex);
+	int maxX = border.getPosition().x + border.getGlobalBounds().width;
+	int minX = border.getPosition().x;
+	int maxY = border.getPosition().y + border.getGlobalBounds().height;
+	int minY = border.getPosition().y;
+
+	GameObject temp(sf::Vector2f((rand() % (maxX - minX) + minX), (rand() % (maxY - minY) + minY)), sf::Vector2f(rand() % 2 + 1, rand() % 2 + 1), tex);
 	if (a % 2 == 0)
 	{
 		temp.setVelocity(sf::Vector2f(-temp.getVelocity().x, temp.getVelocity().y));
